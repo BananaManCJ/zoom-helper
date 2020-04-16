@@ -8,8 +8,9 @@
 
 CONFID="123456789"  # Conference ID
 STIME="1:00"        # Start Time
+SAMPM="AM"          # Start Time AM/PM
 ETIME="2:00"        # End Time
-AMPM="PM"           # AM/PM
+EAMPM="PM"          # End Time AM/PM
 YES="\e[32m"        # For information regarding changing the color visit
 NO="\e[39m"         # https://misc.flogisoft.com/bash/tip_colors_and_formatting
 SUN=$NO             # Everything below this is the calendar setup
@@ -31,7 +32,7 @@ function usage()
 Commands:
   -h|--help                        Shows this help page.
   -c|--copy                        Copies the conference ID to your clipboard.
-  -t|--time                        Shows the time(s) of your Zoom conference.
+  -t|--time                        Shows the time\day(s) of your Zoom conference.
   -l|--link                        Shows the link to your Zoom conference.
   -i|--id                          Shows your conference ID.
   -o|--open                        Opens your call in the Zoom app.
@@ -60,7 +61,7 @@ function copy()
 
 function classtime()
 {
-    echo "Time: $STIME-$ETIME $AMPM"
+    echo "Time: $STIME $SAMPM-$ETIME $EAMPM"
     echo -e "Days: $SUN"Sun" $MON"Mon" $TUE"Tue" $WED"Wed" $THU"Thu" $FRI"Fri" $SAT"Sat""
 }
 
