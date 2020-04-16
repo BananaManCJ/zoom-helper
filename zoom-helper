@@ -1,0 +1,132 @@
+#!/bin/bash
+
+# A simple script to help you manage your Zoom calls
+#
+# If the command won't run, try 'chmod +x /path/to/your/command'
+# 
+# For support, DM me on Twitter @TheBananaManCJ
+
+CONFID="123456789"  # Conference ID
+STIME="1:00"        # Start Time
+ETIME="2:00"        # End Time
+AMPM="PM"           # AM/PM
+YES="\e[32m"        # For information regarding changing the color visit
+NO="\e[39m"         # https://misc.flogisoft.com/bash/tip_colors_and_formatting
+SUN=$NO             # Everything below this is the calendar setup
+MON=$YES
+TUE=$YES
+WED=$YES
+THU=$YES
+FRI=$YES
+SAT=$NO
+
+# PLEASE DO NOT EDIT ANYTHING BELOW THIS LINE
+
+CMD=`basename "$0"`
+
+function usage()
+{
+    echo "Usage: $CMD [<option>]
+
+Commands:
+  -h|--help                        Shows this help page.
+  -c|--copy                        Copies the conference ID to your clipboard.
+  -t|--time                        Shows the time(s) of your Zoom conference.
+  -l|--link                        Shows the link to your Zoom conference.
+  -i|--id                          Shows your conference ID.
+  -o|--open                        Opens your call in the Zoom app.
+
+Dependencies:
+  xclip, xdg-open, and Zoom
+
+Other Help:
+  For support, DM me on Twitter @TheBananaManCJ"
+}
+
+function copy()
+{
+    if ! [ -x "$(command -v xclip)" ]; then
+        echo "Please install xclip"
+    else
+        echo -n $CONFID | xclip &> /dev/null
+        echo -n $CONFID | xclip -selection clipboard &> /dev/null
+        if [[ $(xclip -o) = $CONFID ]]; then
+            echo "Copied!"
+        else
+            echo "Failed to copy $CONFID to clipboard"
+        fi
+    fi
+}
+
+function classtime()
+{
+    echo "Time: $STIME-$ETIME $AMPM"
+    echo -e "Days: $SUN"Sun" $MON"Mon" $TUE"Tue" $WED"Wed" $THU"Thu" $FRI"Fri" $SAT"Sat""
+}
+
+function link()
+{
+    echo "Zoom Class Link: https://zoom.us/j/$CONFID"
+}
+
+function classid()
+{
+    echo "Zoom Class ID: $CONFID"
+}
+
+function helpmsg()
+{
+    echo "Try '$CMD --help' for more information"
+}
+
+function open()
+{
+    if ! [ -x "$(command -v xdg-open)" ]; then
+        echo "Please install xdg-open"
+    else
+        if ! [ -x "$(command -v zoom)" ]; then
+            echo "Please install the Zoom app from https://zoom.us/download"
+        else
+            echo "Opening your Zoom meeting!"
+            xdg-open "zoommtg://zoom.us/join?action=join&confno=$CONFID" > /dev/null 2>&1 &
+        fi
+    fi
+}
+
+while [ "$1" != "" ]; do
+    PARAM=`echo $1 | awk -F= '{print $1}'`
+    case $PARAM in
+        -h | --help)
+            usage
+            exit
+            ;;
+        -c | --copy)
+            copy
+            exit
+            ;;
+        -t | --time)
+            classtime
+            exit
+            ;;
+        -l | --link)
+            link
+            exit
+            ;;
+        -i | --id)
+            classid
+            exit
+            ;;
+        -o | --open)
+            open
+            exit
+            ;;
+        *)
+            echo "ERROR: unknown parameter \"$PARAM\""
+            helpmsg
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+helpmsg
